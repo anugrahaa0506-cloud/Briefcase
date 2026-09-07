@@ -8,8 +8,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{
-  --ink:#344252;--muted:#63748a;--bg:#f3f6f9;--white:#fff;
-  --line:#dfe5ec;--lav:#a56cf4;--lav-dark:#8950dc;--lav-soft:#f0e7ff;
+  --ink:#3f3034;--muted:#75666b;--bg:#f7efe9;--white:#fffaf7;
+  --line:#eadbd5;--lav:#d97b9a;--lav-dark:#bd5b7b;--lav-soft:#fbe8ef;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -17,18 +17,18 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-se
 .wrap{max-width:1220px;margin:auto;padding:22px 28px 26px}
 .nav{
   height:68px;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--line);background:rgba(243,246,249,.94);
+  border-bottom:1px solid var(--line);background:rgba(247,239,233,.94);
   position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)
 }
 .brand-wrap{display:flex;align-items:center;gap:13px}.brand-mark{display:flex;align-items:center;gap:13px}.brand-copy{display:flex;flex-direction:column;gap:1px}.brand-sub{font-size:11px;font-weight:650;color:var(--muted)}.brand{font-size:24px;font-weight:800;letter-spacing:-.04em;color:#354151}
 .logo{
-  width:39px;height:46px;border-radius:7px;background:linear-gradient(145deg,#d9c2ff,#9b63ed);
-  position:relative;box-shadow:0 7px 15px rgba(151,92,232,.18)
+  width:39px;height:46px;border-radius:7px;background:linear-gradient(145deg,#f4c8d8,#d9789a);
+  position:relative;box-shadow:0 7px 15px rgba(191,91,123,.18)
 }
 .logo:before{content:"";position:absolute;left:8px;top:7px;width:23px;height:30px;background:#fff;border-radius:3px;opacity:.86}
-.logo:after{content:"";position:absolute;left:13px;top:14px;width:13px;height:2px;background:#ad82ee;box-shadow:0 6px #ad82ee,0 12px #ad82ee}
+.logo:after{content:"";position:absolute;left:13px;top:14px;width:13px;height:2px;background:#d98aa5;box-shadow:0 6px #d98aa5,0 12px #d98aa5}
 .navlinks{display:flex;align-items:center;gap:28px}.navlinks a{font-size:14px;font-weight:700;color:#647388;text-decoration:none}.navlinks a:hover{color:var(--lav-dark)}
-.nav-cta{background:var(--lav);color:#fff!important;padding:11px 18px;border-radius:8px;box-shadow:0 9px 17px rgba(155,100,237,.25)}
+.nav-cta{background:var(--lav);color:#fff!important;padding:11px 18px;border-radius:8px;box-shadow:0 9px 17px rgba(191,91,123,.22)}
 .hero{padding:18px 0 8px;max-width:880px;min-height:0}
 .kicker{font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:var(--lav-dark);margin-bottom:10px}
 .hero h1{display:none}
@@ -42,7 +42,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-se
   border:1px solid var(--line);background:#fff;border-radius:9px;padding:13px 17px;
   cursor:pointer;text-align:left;min-width:215px;transition:.18s
 }
-.choice button:hover{border-color:#c5b1e8}.choice button.active{border-color:var(--lav);background:var(--lav-soft);box-shadow:0 0 0 2px #eadcff}
+.choice button:hover{border-color:#c5b1e8}.choice button.active{border-color:var(--lav);background:var(--lav-soft);box-shadow:0 0 0 2px #f4d4df}
 .choice strong{display:block;font-size:14px;color:#3a4758}.choice span{font-size:11px;color:var(--muted)}
 .grid{display:grid;grid-template-columns:1fr 1.03fr;gap:15px}
 .card{background:rgba(255,255,255,.82);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:0 12px 30px rgba(52,66,82,.05)}
@@ -51,7 +51,7 @@ input,textarea,select{
   width:100%;border:1px solid #d9e0e8;border-radius:7px;padding:10px 11px;
   background:#fff;font:inherit;font-size:14px;color:var(--ink);outline:0
 }
-input:focus,textarea:focus,select:focus{border-color:#ae83ed;box-shadow:0 0 0 3px #f0e7ff}
+input:focus,textarea:focus,select:focus{border-color:#d883a1;box-shadow:0 0 0 3px #f0e7ff}
 textarea{min-height:118px;resize:vertical}
 .btn{border:0;border-radius:7px;background:#354252;color:white;padding:10px 15px;font-weight:750;cursor:pointer}
 .btn:hover{filter:brightness(.97)}.btn.secondary{background:#fff;color:#7b8795;border:1px solid var(--line)}
@@ -66,7 +66,7 @@ textarea{min-height:118px;resize:vertical}
 .how-intro{max-width:690px;margin:10px 0 25px;color:var(--muted);font-size:14px;line-height:1.65}
 .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.step{padding:20px;background:#fff;border:1px solid var(--line);border-radius:10px}
 .num{font-size:10px;color:var(--lav-dark);font-weight:850}.step h3{font-size:14px;margin:15px 0 6px}.step p{font-size:12px;color:var(--muted);line-height:1.6;margin:0}
-.fun{padding:58px 0 35px;scroll-margin-top:90px}.funbox{margin-top:17px;background:#344252;color:#fff;border-radius:12px;padding:26px;display:grid;grid-template-columns:1fr auto;gap:25px;align-items:center}
+.fun{padding:58px 0 35px;scroll-margin-top:90px}.idea-body{margin:7px 0 0;color:var(--muted);font-size:14px;line-height:1.6}.funbox{margin-top:17px;background:#344252;color:#fff;border-radius:12px;padding:26px;display:grid;grid-template-columns:1fr auto;gap:25px;align-items:center}
 .funbox .label{color:#ceb8ff;font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:800}
 .funbox h3{font-weight:700;font-size:24px;line-height:1.25;margin:8px 0 7px;max-width:780px}.funbox p{color:#cbd2da;font-size:12px;margin:0;line-height:1.5}
 .funbox button{background:#fff;color:#344252}.footer{text-align:center;padding:16px 0 0;color:#8d98a5;font-size:10px}
@@ -90,8 +90,7 @@ textarea{min-height:118px;resize:vertical}
     </span>
   </a>
   <div class="navlinks">
-    <a href="#home">Home</a><a href="#how">How it works</a><a href="#fun">Fun</a>
-    <a class="nav-cta" href="#home">Generate</a>
+    <a href="#home">Home</a><a href="#how">How it works</a><a href="#fun">Idea Generator</a>
   </div>
 </nav>
 
@@ -99,10 +98,10 @@ textarea{min-height:118px;resize:vertical}
 <section class="hero"></section>
 
 <section class="workflow section">
-  <div class="workflow-title"><div><h2>What are you working on?</h2><p>Pick one to get started</p></div></div>
+  <div class="workflow-title"><div><h2><strong>Pick one to get started</strong></h2></div></div>
   <div class="choice">
-    <button id="briefChoice" class="active" onclick="selectMode('brief')"><strong>I have an idea</strong><span>Build it into a brief.</span></button>
-    <button id="repChoice" onclick="selectMode('repurpose')"><strong>I have content</strong><span>Turn it into new formats.</span></button>
+    <button id="briefChoice" class="active" onclick="selectMode('brief')"><strong>Build a Brief</strong><span>Turn your idea into briefs</span></button>
+    <button id="repChoice" onclick="selectMode('repurpose')"><strong>Repurpose Content</strong><span>Turn existing content into new formats</span></button>
   </div>
 
   <section id="briefMode" class="grid">
@@ -138,21 +137,21 @@ textarea{min-height:118px;resize:vertical}
 </section>
 
 <section id="how" class="how section">
-  <div class="kicker">How it works</div>
-  <h2>How to use Briefcase</h2>
+  <h2>How it works</h2>
   <div class="steps">
-    <div class="step"><span class="num">01</span><h3>Choose what you have</h3><p>Select <strong>I have an idea</strong> or <strong>I have content</strong>.</p></div>
-    <div class="step"><span class="num">02</span><h3>Enter your details</h3><p>Add your idea or source content and select the relevant options.</p></div>
-    <div class="step"><span class="num">03</span><h3>Generate your draft</h3><p>Click the generate button to create the brief or new content format.</p></div>
-    <div class="step"><span class="num">04</span><h3>Review the output</h3><p>Edit the draft for accuracy, brand voice and audience fit.</p></div>
+    <div class="step"><span class="num">01</span><h3>Take your pick</h3><p>Select Build a Brief or Repurpose your content.</p></div>
+    <div class="step"><span class="num">02</span><h3>Enter your details</h3><p>Add the information or source content for your task.</p></div>
+    <div class="step"><span class="num">03</span><h3>Generate your draft</h3><p>Click the button to create your brief or repurposed content.</p></div>
+    <div class="step"><span class="num">04</span><h3>Review your output</h3><p>Edit the result for accuracy, voice and audience fit.</p></div>
     <div class="step"><span class="num">05</span><h3>Copy or download</h3><p>Copy the result or download it as TXT, PDF or PNG.</p></div>
   </div>
 </section>
 
 <section id="fun" class="fun section">
-  <div class="kicker">The idea drawer</div><h2>Need a better angle?</h2>
+  <h2>Idea Generator</h2>
+  <p class="idea-body">Stuck in a writer's block? No worries, Pick an idea from our Idea generator and get started.</p>
   <div class="funbox">
-    <div><div class="label">Today's content idea</div><h3 id="prompt">What is one thing your industry keeps making complicated that could be explained in three simple steps?</h3></div>
+    <div><h3 id="prompt">What is one thing your industry keeps making complicated that could be explained in three simple steps?</h3></div>
     <button class="btn" onclick="newPrompt()">Give me another</button>
   </div>
 </section>
@@ -201,8 +200,7 @@ async function downloadPNG(id,name){const c=await html2canvas($(id),{backgroundC
 async function downloadPDF(id,name){const c=await html2canvas($(id),{backgroundColor:'#fffdfa',scale:2});const img=c.toDataURL('image/png');const {jsPDF}=window.jspdf;const pdf=new jsPDF('p','mm','a4');const w=190,h=c.height*w/c.width;pdf.addImage(img,'PNG',10,10,w,h>277?277:h);pdf.save(name)}
 function clearBrief(){['bProject','bAudience','bTone','bNotes'].forEach(id=>$(id).value='');$('briefOut').innerHTML='<div class="placeholder">Your brief will appear here.</div>';$('briefDownloads').style.display='none'}
 function clearRepurpose(){$('rSource').value='';$('rVoice').value='';$('repOut').innerHTML='<div class="placeholder">Your brief will appear here.</div>';$('repDownloads').style.display='none'}
-function newPrompt(){$('prompt').textContent=ideas[Math.floor(Math.random()*ideas.length)];}</span>${x.angle}<br><span style="font-size:15px;line-height:1.5;color:#d7dce2;display:block;margin-top:14px"><strong>Format:</strong> ${x.format}<br><strong>Hook:</strong> ${x.hook}<br><strong>Direction:</strong> ${x.direction}<br><strong>CTA:</strong> ${x.cta}</span>`;
-}
+function newPrompt(){$('prompt').textContent=ideas[Math.floor(Math.random()*ideas.length)];}
 </script>
 </body>
 </html>
