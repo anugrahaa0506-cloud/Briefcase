@@ -152,8 +152,9 @@ textarea{min-height:118px;resize:vertical}
   <p class="idea-body">Stuck in a writer's block? No worries, Pick an idea from our Idea generator and get started.</p>
   <div class="funbox">
     <div><h3 id="prompt">What is one thing your industry keeps making complicated that could be explained in three simple steps?</h3></div>
-    <button class="btn" onclick="newPrompt()">Give me another</button>
+    <div class="actions"><button class="btn secondary" onclick="newPrompt()">Give me another</button><button class="btn" onclick="generateIdeas()">Develop with AI</button></div>
   </div>
+  <div class="card" style="margin-top:16px"><div class="output-head"><span>AI-generated concepts</span></div><div id="ideaAIOut" class="output">Your creative concepts will appear here.</div><div id="ideaAIActions" class="actions" style="display:none;margin-top:12px"><button class="btn secondary" onclick="copyOut('ideaAIOut')">Copy ideas</button></div></div>
 </section>
 </main>
 <footer class="footer">briefcase. · 2026 · made for better content</footer>
@@ -161,6 +162,17 @@ textarea{min-height:118px;resize:vertical}
 
 <script>
 const $=id=>document.getElementById(id);
+const AI_ENDPOINT = "https://YOUR-WORKER-SUBDOMAIN.workers.dev";
+async function callBriefcaseAI(action, payload) {
+  let accessCode = sessionStorage.getItem("briefcaseAccessCode");
+  if (!accessCode) { accessCode = window.prompt("Enter your private Briefcase AI access code:"); if (!accessCode) throw new Error("Access code required."); sessionStorage.setItem("briefcaseAccessCode", accessCode); }
+  const response = await fetch(AI_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, ...payload, accessCode }) });
+  const result = await response.json();
+  if (response.status === 401) { sessionStorage.removeItem("briefcaseAccessCode"); throw new Error("Incorrect access code. Reload and try again."); }
+  if (!response.ok) throw new Error(result.error || "AI request failed.");
+  return result.output;
+}
+
 const ideas=[
 "What is one thing your industry keeps making complicated that could be explained in three simple steps?",
 "What would your audience search for in ChatGPT instead of Google — and what would a genuinely useful answer look like?",
@@ -175,24 +187,20 @@ const ideas=[
 ];
 function selectMode(mode){$('briefMode').classList.toggle('hidden',mode!=='brief');$('repurposeMode').classList.toggle('hidden',mode!=='repurpose');$('briefChoice').classList.toggle('active',mode==='brief');$('repChoice').classList.toggle('active',mode==='repurpose');}
 function esc(s){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
-function buildBrief(){
- const p=$('bProject').value.trim(),a=$('bAudience').value.trim(),g=$('bGoal').value,c=$('bChannel').value,t=$('bTone').value.trim(),n=$('bNotes').value.trim();
- if(!p||!a||!n){alert('Add a project, audience and some raw notes first.');return}
- const bullets=n.split(/\n|[.;]\s+/).map(x=>x.trim()).filter(Boolean).slice(0,8);
- $('briefOut').innerHTML=`<h2 style="margin-top:0">${esc(p)}</h2><p><strong>Objective</strong><br>${esc(g)}</p><p><strong>Audience</strong><br>${esc(a)}</p><p><strong>Core message</strong><br>Frame the content around a clear audience problem, then connect the solution to a specific outcome.</p><p><strong>Channel</strong><br>${esc(c)}</p><p><strong>Tone</strong><br>${esc(t||'Clear, useful and human')}</p><p><strong>Key inputs</strong></p><ul>${bullets.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul><p><strong>Recommended structure</strong></p><ol><li>Hook / problem</li><li>Useful insight or proof</li><li>Solution / perspective</li><li>Practical takeaway</li><li>Single CTA</li></ol><p><strong>Editorial checklist</strong></p><ul><li>One clear audience problem</li><li>Specific proof or examples</li><li>Scannable structure</li><li>No unsupported claims</li><li>CTA aligned to the campaign goal</li></ul>`;
-$('briefDownloads').style.display='flex';
+async function buildBrief() {
+ const project=$('bProject').value.trim(), audience=$('bAudience').value.trim(), goal=$('bGoal').value, channel=$('bChannel').value, tone=$('bTone').value.trim(), notes=$('bNotes').value.trim();
+ if(!project||!audience||!notes){alert('Add a project, audience and some raw notes first.');return}
+ const out=$('briefOut'), downloads=$('briefDownloads'); out.textContent='Thinking through your brief...'; downloads.style.display='none';
+ try { const result=await callBriefcaseAI('brief',{project,audience,goal,channel,tone,notes}); out.textContent=result; downloads.style.display='flex'; }
+ catch(error) { out.textContent='Could not generate your brief.\n\n'+error.message; }
 }
-function repurpose(){
- const s=$('rSource').value.trim(),f=$('rFormat').value,v=$('rVoice').value.trim()||'clear, useful and human';
- if(!s){alert('Paste source content first.');return}
- const a=s.split(/(?<=[.!?])\s+/).map(x=>x.trim()).filter(Boolean),take=a.slice(0,7);let o='';
- if(f==='LinkedIn post')o=`${take[0]||'A useful idea'}\n\nHere’s the bigger point:\n${take.slice(1,4).join(' ')}\n\nWhat this means for content teams:\n• Start with the audience problem\n• Make the insight specific\n• Give the reader something they can use\n\n${v}\n\nWhat would you add?`;
- else if(f==='Instagram carousel')o=take.slice(0,7).map((x,i)=>`SLIDE ${i+1}\n${x}`).join('\n\n')+`\n\nCAPTION\n${v}. Save this for later and share it with someone who needs it.`;
- else if(f==='Email newsletter')o=`SUBJECT: A useful idea worth unpacking\n\nHi,\n\n${take.slice(0,2).join(' ')}\n\nHere’s what matters:\n${take.slice(2,5).join(' ')}\n\nThe takeaway\n${take[5]||take[0]}\n\nBest,\n[Name]`;
- else if(f==='Short-form video script')o=`HOOK\n${take[0]}\n\nBODY\n${take.slice(1,4).join(' ')}\n\nTAKEAWAY\n${take[4]||'Make the idea practical for your audience.'}\n\nCTA\nFollow for more useful content.`;
- else if(f==='5 social posts')o=take.slice(0,5).map((x,i)=>`POST ${i+1}\n${x}\n\nTakeaway: Make the next step obvious.`).join('\n\n---\n\n');
- else o=`CONTENT ANGLES\n\n1. The problem behind the idea\n2. The biggest misconception\n3. A practical framework\n4. A contrarian point of view\n5. A beginner-friendly explainer\n6. A case study or example\n7. A checklist / quick-win post\n\nSOURCE INSIGHT\n${take.slice(0,3).join(' ')}`;
-$('repOut').textContent=o;$('repDownloads').style.display='flex';
+async function repurpose() {
+ const source=$('rSource').value.trim(), format=$('rFormat').value, voice=$('rVoice').value.trim();
+ if(!source){alert('Paste source content first.');return}
+ if(source.length>12000){alert('For this first version, keep source content under 12,000 characters.');return}
+ const out=$('repOut'), downloads=$('repDownloads'); out.textContent='Adapting your content for the selected format...'; downloads.style.display='none';
+ try { const result=await callBriefcaseAI('repurpose',{source,format,voice}); out.textContent=result; downloads.style.display='flex'; }
+ catch(error) { out.textContent='Could not repurpose your content.\n\n'+error.message; }
 }
 async function copyOut(id){await navigator.clipboard.writeText($(id).innerText);alert('Copied to clipboard.')}
 function downloadTxt(id,name){const b=new Blob([$(id).innerText],{type:'text/plain'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();URL.revokeObjectURL(a.href)}
@@ -200,6 +208,12 @@ async function downloadPNG(id,name){const c=await html2canvas($(id),{backgroundC
 async function downloadPDF(id,name){const c=await html2canvas($(id),{backgroundColor:'#fffdfa',scale:2});const img=c.toDataURL('image/png');const {jsPDF}=window.jspdf;const pdf=new jsPDF('p','mm','a4');const w=190,h=c.height*w/c.width;pdf.addImage(img,'PNG',10,10,w,h>277?277:h);pdf.save(name)}
 function clearBrief(){['bProject','bAudience','bTone','bNotes'].forEach(id=>$(id).value='');$('briefOut').innerHTML='<div class="placeholder">Your brief will appear here.</div>';$('briefDownloads').style.display='none'}
 function clearRepurpose(){$('rSource').value='';$('rVoice').value='';$('repOut').innerHTML='<div class="placeholder">Your brief will appear here.</div>';$('repDownloads').style.display='none'}
+async function generateIdeas() {
+ const prompt=$('prompt').textContent.trim(), out=$('ideaAIOut'), actions=$('ideaAIActions');
+ out.textContent='Exploring creative angles...'; actions.style.display='none';
+ try { out.textContent=await callBriefcaseAI('ideas',{prompt}); actions.style.display='flex'; }
+ catch(error) { out.textContent='Could not generate ideas.\n\n'+error.message; }
+}
 function newPrompt(){$('prompt').textContent=ideas[Math.floor(Math.random()*ideas.length)];}
 </script>
 </body>
